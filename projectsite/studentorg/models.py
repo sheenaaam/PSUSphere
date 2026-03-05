@@ -1,8 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
-
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -25,6 +22,7 @@ class Program(BaseModel):
 
     def __str__(self):
         return self.prog_name
+
 
 class Organization(BaseModel):
     name = models.CharField(max_length=250)
@@ -50,6 +48,5 @@ class OrgMember(BaseModel):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     date_joined = models.DateField()
-
     def __str__(self):
-        return f"{self.student} → {self.organization}"
+        return f'{self.student}'
