@@ -15,25 +15,18 @@ class HomePageView(ListView):
     template_name = "home.html"
 
     def get_context_data(self, **kwargs):
-    
         context = super().get_context_data(**kwargs)
         context["total_students"] = Student.objects.count()
-        context["total_organizations"] = Organization.objects.count()
-        context["total_programs"] = Program.objects.count()
-    
+
         today = timezone.now().date()
         count = (
-            OrgMember.objects.filter(
-                date_joined__year=today.year
-            )
+            OrgMember.objects.filter(date_joined__year=today.year)
             .values("student")
             .distinct()
             .count()
         )
-    
         context["students_joined_this_year"] = count
         return context
-    
 
 
 class OrganizationList(ListView):
@@ -53,7 +46,6 @@ class OrganizationList(ListView):
                     Q(description__icontains=query) |
                     Q(college__college_name__icontains=query)
                 )
-            
             return qs
 
 class OrganizationCreateView(CreateView):
@@ -193,15 +185,16 @@ class ProgramList(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-            qs = super().get_queryset()
-            query = self.request.GET.get('q')
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
 
-            if query:
-                qs = qs.filter(
-                    Q(prog_name__icontains=query) |
-                    Q(college__college_name__icontains=query)
-                )
-            return qs
+        if query:
+            qs = qs.filter(
+                Q(name__icontains=query) |
+                Q(description__icontains=query)
+            )
+        return qs
+   
 
     def get_ordering(self):
         allowed = ["prog_name", "college__college_name"]
